@@ -1,19 +1,18 @@
-import { fetchInvoicesPages } from '@/app/lib/data';
-import { lusitana } from '@/app/ui/fonts';
-import { CreateInvoice } from '@/app/ui/invoices/buttons';
-import Pagination from '@/app/ui/invoices/pagination';
-import Table from '@/app/ui/invoices/table';
-import Search from '@/app/ui/search';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { Suspense } from 'react';
+import { fetchInvoicesPages } from "@/app/lib/data";
+import { lusitana } from "@/app/ui/fonts";
+import { CreateInvoice } from "@/app/ui/invoices/buttons";
+import Pagination from "@/app/ui/invoices/pagination";
+import Search from "@/app/ui/search";
+import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
+import { Suspense } from "react";
 
-import { Metadata } from 'next';
- 
+import InvoicesTable from "@/app/ui/invoices/table";
+import { Metadata } from "next";
+
 export const metadata: Metadata = {
-  title: 'Invoices | Acme Dashboard',
+  title: "Invoices | Acme Dashboard",
 };
 
- 
 export default async function Page(props: {
   searchParams?: Promise<{
     search?: string;
@@ -21,7 +20,7 @@ export default async function Page(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const query = searchParams?.search || '';
+  const query = searchParams?.search || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchInvoicesPages(query);
 
@@ -34,12 +33,14 @@ export default async function Page(props: {
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>
-       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+        <InvoicesTable query={query} currentPage={currentPage} />
       </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
-      </div>
+      {totalPages > 1 && (
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination totalPages={totalPages} />
+        </div>
+      )}
     </div>
   );
 }
