@@ -1,4 +1,18 @@
 services:
+  server:
+    container_name: nextjs-server
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    env_file:
+      - docker.env
+    networks:
+      - nextjs
+
   postgres:
     image: postgres:16
     container_name: nextjs-postgres
@@ -10,7 +24,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
-      - .env
+      - docker.env
 
 volumes:
   db_data:

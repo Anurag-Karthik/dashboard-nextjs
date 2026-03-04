@@ -5,6 +5,8 @@ import { Suspense } from 'react';
 import CardWrapper from '../../ui/dashboard/cards';
 import LatestInvoices from '../../ui/dashboard/latest-invoices';
  
+export const dynamic = "force-dynamic";
+
 export default async function Page() {    
   return (
     <main>
