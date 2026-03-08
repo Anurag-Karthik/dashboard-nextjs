@@ -1,12 +1,16 @@
 name: Production Deployment Pipeline
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: ["prod"]
 
 jobs:
-  build-and-deploy:
+  build-and-trigger-deployment:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'Update image tag')"
 
     steps:
       - name: Checkout code
@@ -31,22 +35,22 @@ jobs:
           push: true
           tags: |
             registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_${{ github.sha }}
+
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-        - name: Update docker-compose-prod image tag
+      - name: Update docker-compose-prod image tag
         run: |
           TAG="paas-service-test_${{ github.sha }}"
-          sed -i "s|ib2-frontend:paas-service-test_.*|ib2-frontend:${TAG}|g" /deployment/docker-compose-prod.yml
+          sed -i "s|registry.digitalocean.com/ib-registry/ib2-frontend:.*|registry.digitalocean.com/ib-registry/ib2-frontend:${TAG}|g" deployment/docker-compose-prod.yml
+
+      - name: Show updated compose file
+        run: cat deployment/docker-compose-prod.yml
 
       - name: Commit updated compose file
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add /deployment/docker-compose-prod.yml
+          git add deployment/docker-compose-prod.yml
           git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
-          git push
-
-      - name: Trigger Dokploy Deployment
-        run: |
-          curl -X POST ${{ secrets.DOKPLOY_DEPLOY_HOOK }}
+          git push origin prod
