@@ -9,12 +9,9 @@ services:
     ports:
       - 3000:3000
     env_file:
-      - .env
+      - docker.env
     networks:
       - nextjs
-
-volumes:
-  db_data:
 
 networks:
   nextjs:
