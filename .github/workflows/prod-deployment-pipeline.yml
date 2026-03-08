@@ -30,10 +30,22 @@ jobs:
           file: deployment/Dockerfile
           push: true
           tags: |
-            registry.digitalocean.com/ib-registry/paas-service-test:${{ github.sha }}
-            registry.digitalocean.com/ib-registry/paas-service-test:latest
+            registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+        - name: Update docker-compose-prod image tag
+        run: |
+          TAG="paas-service-test_${{ github.sha }}"
+          sed -i "s|ib2-frontend:paas-service-test_.*|ib2-frontend:${TAG}|g" /deployment/docker-compose-prod.yml
+
+      - name: Commit updated compose file
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add /deployment/docker-compose-prod.yml
+          git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
+          git push
 
       - name: Trigger Dokploy Deployment
         run: |
