@@ -1,0 +1,18 @@
+services:
+  server:
+    container_name: nextjs-server
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+    env_file:
+      - docker.env
+    networks:
+      - nextjs
+
+networks:
+  nextjs:
+    external: true
