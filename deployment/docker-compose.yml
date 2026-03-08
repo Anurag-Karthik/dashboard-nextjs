@@ -2,7 +2,7 @@ services:
   server:
     container_name: nextjs-server
     build:
-      context: .
+      context: ../
       dockerfile: deployment/Dockerfile
     environment:
       NODE_ENV: production
