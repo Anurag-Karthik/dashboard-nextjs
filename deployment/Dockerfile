@@ -25,6 +25,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
 
 # create non-root user
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
@@ -38,4 +40,4 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["next", "start", "-H", "0.0.0.0", "-p", "3000"]
+CMD ["node", "server.js"]
