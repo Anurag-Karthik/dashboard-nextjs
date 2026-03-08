@@ -1,9 +1,6 @@
 services:
   server:
     container_name: nextjs-server
-    build:
-      context: .
-      dockerfile: deployment/Dockerfile
     image: registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_949cfb48f81642d0e2e310766f5a78cd4535613b
     pull_policy: always
     environment:
@@ -16,8 +13,8 @@ services:
       - .env
 
   postgres:
-    image: postgres:16
     container_name: nextjs-postgres
+    image: postgres:16
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
