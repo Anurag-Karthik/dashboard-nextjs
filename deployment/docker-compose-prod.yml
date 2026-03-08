@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: deployment/Dockerfile
-    image: registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_949cfb48f81642d0e2e310766f5a78cd4535613b
+    image: registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_36850d709617063d4f15186c609bf6b60b65e947
     pull_policy: always
     environment:
       NODE_ENV: production
