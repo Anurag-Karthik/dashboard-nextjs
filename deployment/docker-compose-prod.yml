@@ -1,7 +1,7 @@
 services:
   server:
     container_name: nextjs-server
-    image: registry.digitalocean.com/ib-registry/ib2-frontend
+    image: registry.digitalocean.com/ib-registry/ib2-frontend:
     pull_policy: always
     environment:
       NODE_ENV: production
