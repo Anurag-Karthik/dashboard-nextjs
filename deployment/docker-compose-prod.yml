@@ -1,21 +1,17 @@
 services:
   server:
     container_name: nextjs-server
-    build:
-      context: .
-      dockerfile: deployment/Dockerfile
+    image: registry.digitalocean.com/ib-registry/frontend:latest
+    pull_policy: always
     environment:
       NODE_ENV: production
     ports:
       - 3000:3000
     env_file:
-      - docker.env
+      - .env
     networks:
       - nextjs
-
-volumes:
-  db_data:
-
+      
 networks:
   nextjs:
     external: true

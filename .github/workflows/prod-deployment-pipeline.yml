@@ -1,0 +1,40 @@
+name: Production Deployment Pipeline
+
+on:
+  push:
+    branches: ["prod"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_DEV_TOKEN }}
+
+      - name: Login to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: deployment/Dockerfile
+          push: true
+          tags: |
+            registry.digitalocean.com/ib-registry/paas-service-test:${{ github.sha }}
+            registry.digitalocean.com/ib-registry/paas-service-test:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trigger Dokploy Deployment
+        run: |
+          curl -X POST ${{ secrets.DOKPLOY_DEPLOY_HOOK }}
