@@ -1,7 +1,7 @@
 services:
   server:
     container_name: nextjs-server
-    image: registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_82abcd7b3bfdf0c0e4f5b9485e2067924956a3cf
+    image: registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_0e9ccac67e0ba9ba6c85c78aca454151990afe4a
     pull_policy: always
     environment:
       NODE_ENV: production
