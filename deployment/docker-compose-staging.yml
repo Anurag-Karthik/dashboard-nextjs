@@ -1,0 +1,33 @@
+services:
+  server:
+    container_name: nextjs-server
+    image: registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_40b5fa94eeaeb06291f2561b41e72337c7b6e1a8
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+    networks:
+      - dokploy-network
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+
+  postgres:
+    container_name: nextjs-postgres
+    image: postgres:16
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+
+volumes:
+  db_data:
+
+networks:
+  dokploy-network:
+    external: true
