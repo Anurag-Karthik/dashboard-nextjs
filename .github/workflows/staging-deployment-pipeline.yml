@@ -1,11 +1,11 @@
-name: Production Deployment Pipeline
+name: Staging Deployment Pipeline
 
 permissions:
   contents: write
 
 on:
   push:
-    branches: ["prod"]
+    branches: ["staging"]
 
 jobs:
   build-and-trigger-deployment:
@@ -34,23 +34,23 @@ jobs:
           file: deployment/Dockerfile
           push: true
           tags: |
-            registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_prod_${{ github.sha }}
+            registry.digitalocean.com/ib-registry/ib2-frontend:paas-service-test_staging_${{ github.sha }}
 
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Update docker-compose-prod image tag
+      - name: Update docker-compose-staging image tag
         run: |
-          TAG="paas-service-test_prod_${{ github.sha }}"
-          sed -i "s|registry.digitalocean.com/ib-registry/ib2-frontend:.*|registry.digitalocean.com/ib-registry/ib2-frontend:${TAG}|g" deployment/docker-compose-prod.yml
+          TAG="paas-service-test_staging_${{ github.sha }}"
+          sed -i "s|registry.digitalocean.com/ib-registry/ib2-frontend:.*|registry.digitalocean.com/ib-registry/ib2-frontend:${TAG}|g" deployment/docker-compose-staging.yml
 
       - name: Show updated compose file
-        run: cat deployment/docker-compose-prod.yml
+        run: cat deployment/docker-compose-staging.yml
 
       - name: Commit updated compose file
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add deployment/docker-compose-prod.yml
+          git add deployment/docker-compose-staging.yml
           git commit -m "Update image tag to ${{ github.sha }}" || echo "No changes"
-          git push origin prod
+          git push origin staging
